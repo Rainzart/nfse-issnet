@@ -18,7 +18,10 @@
   ],
   "minimum-stability": "dev",
   "require": {
-    "php": "^7.1.3"
+    "php": "^7.1.3",
+    "nesbot/carbon": "^2",
+    "nfephp-org/sped-common": "^5.0",
+    "respect/validation": "^1.1"
   },
 
   "autoload": {
