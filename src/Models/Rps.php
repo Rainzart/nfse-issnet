@@ -1,6 +1,6 @@
 <?php
 
-namespace HaDDeR\NFSe_ISSNET\Models;
+namespace HaDDeR\NfseIssnet\Models;
 
 use Carbon\Carbon;
 use DateTime;

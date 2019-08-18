@@ -1,8 +1,8 @@
 <?php
 
-namespace HaDDeR\NFSe_ISSNET;
+namespace HaDDeR\NfseIssnet;
 
-use HaDDeR\NFSe_ISSNET\Models\Rps;
+use HaDDeR\NfseIssnet\Models\Rps;
 use NFePHP\Common\DOMImproved;
 use NFePHP\Common\Validator;
 
