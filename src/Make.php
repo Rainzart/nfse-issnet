@@ -3,7 +3,9 @@
 namespace HaDDeR\NfseIssnet;
 
 use HaDDeR\NfseIssnet\Models\Rps;
+use NFePHP\Common\Certificate;
 use NFePHP\Common\DOMImproved;
+use NFePHP\Common\Signer;
 use NFePHP\Common\Validator;
 
 class Make
@@ -12,14 +14,54 @@ class Make
     private $config;
 
     public $pathSchemes;
+    private $certificado;
+    /**
+     * @var int
+     */
+    private $algorithm;
 
-    public function __construct($config)
+    public function __construct($config, Certificate $certificado)
     {
         $this->config = is_object($config) ? $config : json_decode($config);
+        $this->certificado = $certificado;
+
         $this->pathSchemes = __DIR__ . '/../schemes';
+
+        //TODO ver necessidade de não ser uma constante
+        $this->algorithm = OPENSSL_ALGO_SHA1;
     }
 
+    /**
+     * Gera o XML, assina e envia.
+     *
+     * @param $rpss
+     * @return string
+     */
     public function make($rpss)
+    {
+        $content = $this->makeXML($rpss);
+        $body = Signer::sign(
+            $this->certificado,
+            $content,
+            'LoteRps',
+            '',
+            $this->algorithm,
+            [false, false, null, null]
+        );
+        $body = $this->clear($body);
+        $this->validar($body, 'servico_enviar_lote_rps_envio');
+
+        $retorno = $this->enviar($body);
+        return $retorno;
+    }
+
+    /**
+     * Gera apenas o XML sem assinar
+     *
+     * @param $rpss
+     * @return string
+     */
+    public function makeXML($rpss)
     {
         $this->dom = new DOMImproved('1.0', 'utf-8');
         $lote = $this->header($this->config->num_lote, $this->config->remetenteCpfCnpj, $this->config->inscricaoMunicipal, count($rpss));
@@ -34,9 +76,16 @@ class Make
         }
         $content = $this->dom->saveXML();
 
-        return true;
+        return $content;
     }
 
+    /**
+     * Gera o conteúdo da tag tc:ListaRps
+     *
+     * @param $listaRps
+     * @param Rps $rps
+     * @return mixed
+     */
     private function render($listaRps, Rps $rps)
     {
         $tc_rpc = $this->dom->createElement('tc:Rps');
@@ -610,8 +659,7 @@ class Make
      */
     private function validar($body, $method = '')
     {
-        $schema = app_path($this->pathSchemes . DIRECTORY_SEPARATOR . 'schemas' . DIRECTORY_SEPARATOR . $method . ".xsd");
-        dd($schema);
+        $schema = $this->pathSchemes . DIRECTORY_SEPARATOR . $method . ".xsd";
         if (!is_file($schema)) {
             throw new \InvalidArgumentException("XSD file not found. [$schema]");
         }
@@ -619,5 +667,10 @@ class Make
             $body,
             $schema
         );
+    }
+
+    public function enviar($xml)
+    {
+        return 'enviar';
     }
 }
