@@ -2,7 +2,10 @@
 
 namespace HaDDeR\NfseIssnet;
 
+use DOMElement;
+use HaDDeR\NfseIssnet\Common\Tools;
 use HaDDeR\NfseIssnet\Models\Rps;
+use InvalidArgumentException;
 use NFePHP\Common\Certificate;
 use NFePHP\Common\DOMImproved;
 use NFePHP\Common\Signer;
@@ -10,10 +13,13 @@ use NFePHP\Common\Validator;
 
 class Make
 {
+    /**
+     * @var DOMImproved
+     */
     private $dom;
     private $config;
 
-    public $pathSchemes;
+    public $pathSchemas;
     private $certificado;
     /**
      * @var int
@@ -22,13 +28,14 @@ class Make
 
     public function __construct($config, Certificate $certificado)
     {
-        $this->config = is_object($config) ? $config : json_decode($config);
+        $this->config = $this->setConfig($config);
         $this->certificado = $certificado;
 
-        $this->pathSchemes = __DIR__ . '/../schemes';
+        $this->pathSchemas = __DIR__ . '/../schemes';
 
         //TODO ver necessidade de não ser uma constante
         $this->algorithm = OPENSSL_ALGO_SHA1;
+        $this->config->autoSign = isset($config->autoSign) ? $config->autoSign : true;
     }
 
     /**
@@ -39,19 +46,14 @@ class Make
      */
     public function make($rpss)
     {
-        $content = $this->makeXML($rpss);
-        $body = Signer::sign(
-            $this->certificado,
-            $content,
-            'LoteRps',
-            '',
-            $this->algorithm,
-            [false, false, null, null]
-        );
-        $body = $this->clear($body);
+        $body = $this->makeXML($rpss);
+        if ($this->config->dom->autoSign) {
+            $body = $this->sign($body, 'LoteRps');
+            $body = $this->clear($body);
+        }
         $this->validar($body, 'servico_enviar_lote_rps_envio');
 
-        $retorno = $this->enviar($body);
+        $retorno = $this->enviar($body, 'RecepcionarLoteRps');
         return $retorno;
     }
 
@@ -64,9 +66,11 @@ class Make
     public function makeXML($rpss)
     {
         $this->dom = new DOMImproved('1.0', 'utf-8');
+        if ($this->config->dom->formatOutput) {
+            $this->dom->formatOutput = true;
+        }
         $lote = $this->header($this->config->num_lote, $this->config->remetenteCpfCnpj, $this->config->inscricaoMunicipal, count($rpss));
         $listaRps = $this->dom->createElement('tc:ListaRps');
-
         if (is_object($rpss)) {
             $lote->appendChild(self::render($listaRps, $rpss));
         } elseif (is_array($rpss)) {
@@ -75,8 +79,58 @@ class Make
             }
         }
         $content = $this->dom->saveXML();
+        if ($this->config->dom->autoSign) {
+            $content = $this->sign($content, 'LoteRps');
+            $content = $this->clear($content);
+        }
+        return '<?xml version="1.0" encoding="utf-8"?>' . $content;
+    }
 
-        return $content;
+    public function consultaRps($protocolo)
+    {
+        $this->dom = new DOMImproved('1.0', 'utf-8');
+        if ($this->config->dom->formatOutput) {
+            $this->dom->formatOutput = true;
+        }
+        $consultaSituacao = $this->dom->createElement('ConsultarLoteRpsEnvio');
+        $consultaSituacao->setAttribute('xmlns', 'http://www.issnetonline.com.br/webserviceabrasf/vsd/servico_consultar_lote_rps_envio.xsd');
+        $consultaSituacao->setAttribute('xmlns:tc', 'http://www.issnetonline.com.br/webserviceabrasf/vsd/tipos_complexos.xsd');
+        $prestador_dom = $this->dom->createElement('Prestador');
+        $tc_cpfcnpj = $this->dom->createElement('tc:CpfCnpj');
+        $this->dom->addChild(
+            $tc_cpfcnpj,
+            'tc:Cnpj',
+            $this->config->remetenteCpfCnpj,
+            true,
+            'Prestador CNPJ',
+            false
+        );
+
+        $this->dom->addChild(
+            $prestador_dom,
+            'tc:InscricaoMunicipal',
+            $this->config->inscricaoMunicipal,
+            true,
+            'Inscrição Municipal',
+            false
+        );
+        $prestador_dom->appendChild($tc_cpfcnpj);
+        $consultaSituacao->appendChild($prestador_dom);
+
+        $this->dom->addChild(
+            $consultaSituacao,
+            'Protocolo',
+            $protocolo,
+            true,
+            'Protocolo',
+            false
+        );
+
+        $this->dom->appendChild($consultaSituacao);
+        $content = $this->dom->saveXML();
+        $this->validar($content, 'servico_consultar_lote_rps_envio');
+        $retorno = $this->enviar($content, 'ConsultarLoteRps');
+        return $retorno;
     }
 
     /**
@@ -86,12 +140,11 @@ class Make
      * @param Rps $rps
      * @return mixed
      */
-    private function render($listaRps, Rps $rps)
+    private function render(DOMElement $listaRps, Rps $rps)
     {
         $tc_rpc = $this->dom->createElement('tc:Rps');
         $tc_InfRps = $this->dom->createElement('tc:InfRps');
         $tc_IdentificacaoRps = $this->dom->createElement('tc:IdentificacaoRps');
-
         $this->dom->addChild(
             $tc_IdentificacaoRps,
             'tc:Numero',
@@ -100,7 +153,6 @@ class Make
             "Numero do RPS",
             true
         );
-
         $this->dom->addChild(
             $tc_IdentificacaoRps,
             'tc:Serie',
@@ -117,9 +169,7 @@ class Make
             "Tipo do RPS",
             true
         );
-
         $this->dom->appChild($tc_InfRps, $tc_IdentificacaoRps, 'Adicionando tag IdentificacaoRPS');
-
 //        $rps->infDataEmissao->setTimezone($this->timezone);
         $this->dom->addChild(
             $tc_InfRps,
@@ -161,7 +211,6 @@ class Make
             'Status',
             false
         );
-
         if (!empty($rps->infRpsSubstituido['numero'])) {
             $rpssubs = $this->dom->createElement('tc:RpsSubstituido');
             $this->dom->addChild(
@@ -190,7 +239,6 @@ class Make
             );
             $this->dom->appChild($tc_InfRps, $rpssubs, 'Adicionando tag RpsSubstituido em infRps');
         }
-
         $this->dom->addChild(
             $tc_InfRps,
             'tc:RegimeEspecialTributacao',
@@ -213,7 +261,7 @@ class Make
             $tc_valores,
             'tc:ValorDeducoes',
             $rps->infValorDeducoes,
-            false,
+            true,
             'ValorDeducoes',
             false
         );
@@ -330,7 +378,6 @@ class Make
             false
         );
         $this->dom->appChild($tc_servico, $tc_valores, 'Adicionando tag Valores em Servico');
-
         $this->dom->addChild(
             $tc_servico,
             'tc:ItemListaServico',
@@ -372,7 +419,6 @@ class Make
             false
         );
         $this->dom->appChild($tc_InfRps, $tc_servico, 'Adicionando tag Servico');
-
         $tc_prestador = $this->dom->createElement('tc:Prestador');
         $tc_cpfCnpj = $this->dom->createElement('tc:CpfCnpj');
         if ($rps->infPrestador['tipo'] == 2) {
@@ -404,7 +450,6 @@ class Make
             false
         );
         $this->dom->appChild($tc_InfRps, $tc_prestador, 'Adicionando tag Prestador em infRPS');
-
         $tomador = $this->dom->createElement('tc:Tomador');
         $identificacaoTomador = $this->dom->createElement('tc:IdentificacaoTomador');
         $tc_cpfCnpjTomador = $this->dom->createElement('tc:CpfCnpj');
@@ -503,7 +548,6 @@ class Make
             false
         );
         $this->dom->appChild($tomador, $endereco, 'Adicionando tag Endereco em Tomador');
-
         if ($rps->infTomador['tel'] != '' || $rps->infTomador['email'] != '') {
             $contato = $this->dom->createElement('tc:Contato');
             $this->dom->addChild(
@@ -525,7 +569,6 @@ class Make
             $this->dom->appChild($tomador, $contato, 'Adicionando tag Contato em Tomador');
         }
         $this->dom->appChild($tc_InfRps, $tomador, 'Adicionando tag Tomador em infRPS');
-
         if (!empty($rps->infIntermediario['razao'])) {
             $intermediario = $this->dom->createElement('tc:IntermediarioServico');
             $this->dom->addChild(
@@ -587,7 +630,6 @@ class Make
             );
             $this->dom->appChild($tc_InfRps, $construcao, 'Adicionando tag Construcao em infRPS');
         }
-
         $tc_rpc->appendChild($tc_InfRps);
         $listaRps->appendChild($tc_rpc);
         return $listaRps;
@@ -601,7 +643,6 @@ class Make
         $root->setAttribute('xmlns', 'http://www.issnetonline.com.br/webserviceabrasf/vsd/servico_enviar_lote_rps_envio.xsd');
         $root->setAttribute('xmlns:tc', 'http://www.issnetonline.com.br/webserviceabrasf/vsd/tipos_complexos.xsd');
         $root->appendChild($loteRps);
-
         $this->dom->addChild(
             $loteRps,
             'tc:NumeroLote',
@@ -620,7 +661,6 @@ class Make
             true
         );
         $loteRps->appendChild($tc_cpfCnpj_xml);
-
         $this->dom->addChild(
             $loteRps,
             'tc:InscricaoMunicipal',
@@ -629,7 +669,6 @@ class Make
             "Inscrição municipal",
             true
         );
-
         $this->dom->addChild(
             $loteRps,
             'tc:QuantidadeRps',
@@ -659,9 +698,9 @@ class Make
      */
     private function validar($body, $method = '')
     {
-        $schema = $this->pathSchemes . DIRECTORY_SEPARATOR . $method . ".xsd";
+        $schema = $this->pathSchemas . DIRECTORY_SEPARATOR . $method . ".xsd";
         if (!is_file($schema)) {
-            throw new \InvalidArgumentException("XSD file not found. [$schema]");
+            throw new InvalidArgumentException("XSD file not found. [$schema]");
         }
         return Validator::isValid(
             $body,
@@ -669,8 +708,38 @@ class Make
         );
     }
 
-    public function enviar($xml)
+    public function enviar($xml, $operation)
     {
-        return 'enviar';
+        $tools = new Tools($this->config, $this->certificado);
+        return $tools->send($xml, $operation);
+    }
+
+    private function sign(string $content, $tagname)
+    {
+        return Signer::sign(
+            $this->certificado,
+            $content,
+            $tagname,
+            '',
+            $this->algorithm,
+            [false, false, null, null]
+        );
+    }
+
+    /**
+     * Seta configurações padrões
+     *
+     * @param $config
+     * @return mixed
+     */
+    private function setConfig($config)
+    {
+        $config = is_object($config) ? $config : json_decode($config);
+        $config->nfsePath = isset($config->nfsePath) ? $config->nfsePath : '/nfse';
+        $config->dom = (isset($config->dom) and is_object($config->dom) and is_a($config->dom, \stdClass::class)) ? $config->dom : new \stdClass();
+
+        $config->dom->autoSign = isset($config->dom->autoSign) ? $config->dom->autoSign : true;
+        $config->dom->formatOutput = isset($config->dom->formatOutput) ? $config->dom->formatOutput : false;
+        return $config;
     }
 }
