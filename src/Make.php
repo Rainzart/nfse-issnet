@@ -697,7 +697,7 @@ class Make
      * @param string $method Denominação do método
      * @return boolean
      */
-    private function validar($body, $method = '')
+    public function validar($body, $method = '')
     {
         $schema = $this->pathSchemas . DIRECTORY_SEPARATOR . $method . ".xsd";
         if (!is_file($schema)) {

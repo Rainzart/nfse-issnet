@@ -20,6 +20,7 @@ class Tools
             'producao' => 'http://www.issnetonline.com.br/webserviceabrasf/novohamburgo/servicos.asmx',
             'version' => '1.00',
             'soapns' => 'http://www.issnetonline.com.br/webservice/nfd',
+            'xmlns' => 'http://www.issnetonline.com.br/webservice/nfd',
         ]
     ];
     protected $config;
