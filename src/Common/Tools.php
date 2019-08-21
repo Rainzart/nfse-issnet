@@ -58,7 +58,6 @@ class Tools
             $url = $this->wsobj->producao;
         }
         $request = $this->createSoapRequest($message, $operation);
-
         $this->lastRequest = $request;
 
         if (empty($this->soap)) {

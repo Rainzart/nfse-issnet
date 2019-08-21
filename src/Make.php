@@ -52,6 +52,7 @@ class Make
             $body = $this->sign($body, 'LoteRps');
             $body = $this->clear($body);
         }
+        $body = '<?xml version="1.0" encoding="utf-8"?>' . $body;
         $this->validar($body, 'servico_enviar_lote_rps_envio');
 
         $retorno = $this->enviar($body, 'RecepcionarLoteRps');
