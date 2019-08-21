@@ -4,6 +4,7 @@ namespace HaDDeR\NfseIssnet\Common\Soap;
 
 /**
  * Soap base class
+ * Classe copiada nfephp-org/sped-nfse-nacional co alguns ajustes
  *
  * @category  NFePHP
  * @package   NFePHP\NFSeNac
@@ -191,7 +192,9 @@ abstract class SoapBase implements SoapInterface
 
     /**
      * Disables the security checking of host and peer certificates
+     *
      * @param bool $flag
+     * @return bool
      */
     public function disableSecurity($flag = false)
     {
@@ -282,7 +285,9 @@ abstract class SoapBase implements SoapInterface
 
     /**
      * Set timeout for communication
+     *
      * @param int $timesecs
+     * @return int
      */
     public function timeout($timesecs)
     {

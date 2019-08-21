@@ -10,6 +10,7 @@ use NFePHP\Common\Certificate;
 use NFePHP\Common\DOMImproved;
 use NFePHP\Common\Signer;
 use NFePHP\Common\Validator;
+use stdClass;
 
 class Make
 {
@@ -736,7 +737,7 @@ class Make
     {
         $config = is_object($config) ? $config : json_decode($config);
         $config->nfsePath = isset($config->nfsePath) ? $config->nfsePath : '/nfse';
-        $config->dom = (isset($config->dom) and is_object($config->dom) and is_a($config->dom, \stdClass::class)) ? $config->dom : new \stdClass();
+        $config->dom = (isset($config->dom) and is_object($config->dom) and is_a($config->dom, stdClass::class)) ? $config->dom : new stdClass();
 
         $config->dom->autoSign = isset($config->dom->autoSign) ? $config->dom->autoSign : true;
         $config->dom->formatOutput = isset($config->dom->formatOutput) ? $config->dom->formatOutput : false;

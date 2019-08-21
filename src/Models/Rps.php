@@ -276,7 +276,7 @@ class Rps
     public function numero($value)
     {
         if (!Validator::numeric()->intVal()->positive()->validate($value)) {
-            throw new \InvalidArgumentException('O numero do RPS deve ser um inteiro positivo apenas.');
+            throw new InvalidArgumentException('O numero do RPS deve ser um inteiro positivo apenas.');
         }
         $this->infNumero = $value;
     }
@@ -291,7 +291,7 @@ class Rps
     {
         $value = trim($value);
         if (!Validator::stringType()->length(1, 5)->validate($value)) {
-            throw new \InvalidArgumentException('A série não pode ser vazia deve ter até 5 caracteres.');
+            throw new InvalidArgumentException('A série não pode ser vazia deve ter até 5 caracteres.');
         }
         $this->infSerie = $value;
     }
@@ -305,7 +305,7 @@ class Rps
     public function tipo($value = self::TIPO_RPS)
     {
         if (!Validator::numeric()->intVal()->between(1, 3)->validate($value)) {
-            throw new \InvalidArgumentException('O tipo deve estar entre 1 e 3.');
+            throw new InvalidArgumentException('O tipo deve estar entre 1 e 3.');
         }
         $this->infTipo = $value;
     }
@@ -346,7 +346,7 @@ class Rps
     public function naturezaOperacao($value = self::NATUREZA_INTERNA)
     {
         if (!Validator::numeric()->intVal()->between(1, 6)->validate($value)) {
-            throw new \InvalidArgumentException('A natureza da operação deve estar entre 1 e 6.');
+            throw new InvalidArgumentException('A natureza da operação deve estar entre 1 e 6.');
         }
         $this->infNaturezaOperacao = $value;
     }
@@ -360,7 +360,7 @@ class Rps
     public function optanteSimplesNacional($value = self::SIM)
     {
         if (!Validator::numeric()->intVal()->between(1, 2)->validate($value)) {
-            throw new \InvalidArgumentException('Optante pelo Simples deve ser 1 ou 2.');
+            throw new InvalidArgumentException('Optante pelo Simples deve ser 1 ou 2.');
         }
         $this->infOptanteSimplesNacional = $value;
     }
@@ -374,7 +374,7 @@ class Rps
     public function incentivadorCultural($value = self::NAO)
     {
         if (!Validator::numeric()->intVal()->between(1, 2)->validate($value)) {
-            throw new \InvalidArgumentException('Incentivador cultural deve ser 1 ou 2.');
+            throw new InvalidArgumentException('Incentivador cultural deve ser 1 ou 2.');
         }
         $this->infIncentivadorCultural = $value;
     }
@@ -388,7 +388,7 @@ class Rps
     public function status($value = self::STATUS_NORMAL)
     {
         if (!Validator::numeric()->intVal()->between(1, 2)->validate($value)) {
-            throw new \InvalidArgumentException('O status do RPS deve ser 1 ou 2.');
+            throw new InvalidArgumentException('O status do RPS deve ser 1 ou 2.');
         }
         $this->infStatus = $value;
     }
@@ -402,7 +402,7 @@ class Rps
     public function regimeEspecialTributacao($value = self::REGIME_MICROEMPRESA)
     {
         if (!Validator::numeric()->intVal()->between(1, 4)->validate($value)) {
-            throw new \InvalidArgumentException('O regime de tributação deve estar entre 1 e 4.');
+            throw new InvalidArgumentException('O regime de tributação deve estar entre 1 e 4.');
         }
         $this->infRegimeEspecialTributacao = $value;
     }
@@ -416,7 +416,7 @@ class Rps
     public function valorServicos($value = 0.00)
     {
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
-            throw new \InvalidArgumentException('Os valores deve ser numericos tipo float.');
+            throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
         $this->infValorServicos = round($value, 2);
     }
@@ -430,7 +430,7 @@ class Rps
     public function outrasRetencoes($value = 0.00)
     {
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
-            throw new \InvalidArgumentException('Os valores deve ser numericos tipo float.');
+            throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
         $this->infOutrasRetencoes = round($value, 2);
     }
@@ -444,7 +444,7 @@ class Rps
     public function valorPis($value = 0.00)
     {
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
-            throw new \InvalidArgumentException('Os valores deve ser numericos tipo float.');
+            throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
         $this->infValorPis = round($value, 2);
     }
@@ -458,7 +458,7 @@ class Rps
     public function valorCofins($value = 0.00)
     {
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
-            throw new \InvalidArgumentException('Os valores deve ser numericos tipo float.');
+            throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
         $this->infValorCofins = round($value, 2);
     }
@@ -472,7 +472,7 @@ class Rps
     public function valorInss($value = 0.00)
     {
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
-            throw new \InvalidArgumentException('Os valores deve ser numericos tipo float.');
+            throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
         $this->infValorInss = round($value, 2);
     }
@@ -486,7 +486,7 @@ class Rps
     public function valorIr($value = 0.00)
     {
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
-            throw new \InvalidArgumentException('Os valores deve ser numericos tipo float.');
+            throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
         $this->infValorIr = round($value, 2);
     }
@@ -500,7 +500,7 @@ class Rps
     public function valorCsll($value = 0.00)
     {
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
-            throw new \InvalidArgumentException('Os valores deve ser numericos tipo float.');
+            throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
         $this->infValorCsll = round($value, 2);
     }
@@ -514,7 +514,7 @@ class Rps
     public function issRetido($value = self::NAO)
     {
         if (!Validator::numeric()->intVal()->between(1, 2)->validate($value)) {
-            throw new \InvalidArgumentException('IssRetido deve ser 1 ou 2.');
+            throw new InvalidArgumentException('IssRetido deve ser 1 ou 2.');
         }
         $this->infIssRetido = $value;
     }
@@ -528,7 +528,7 @@ class Rps
     public function valorIssRetido($value = 0.00)
     {
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
-            throw new \InvalidArgumentException('Os valores deve ser numericos tipo float.');
+            throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
         $this->infValorIssRetido = round($value, 2);
     }
@@ -542,7 +542,7 @@ class Rps
     public function valorIss($value = 0.00)
     {
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
-            throw new \InvalidArgumentException('Os valores deve ser numericos tipo float.');
+            throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
         $this->infValorIss = round($value, 2);
     }
@@ -557,7 +557,7 @@ class Rps
     public function baseCalculo($value = 0.00)
     {
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
-            throw new \InvalidArgumentException('Os valores deve ser numericos tipo float.');
+            throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
         $this->infBaseCalculo = round($value, 2);
     }
@@ -571,7 +571,7 @@ class Rps
     public function aliquota($value = 0.00)
     {
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
-            throw new \InvalidArgumentException('Os valores deve ser numericos tipo float.');
+            throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
         $this->infAliquota = round($value, 4);
     }
@@ -585,7 +585,7 @@ class Rps
     public function valorDeducoes($value = 0.00)
     {
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
-            throw new \InvalidArgumentException('Os valores deve ser numericos tipo float.');
+            throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
         $this->infValorDeducoes = round($value, 2);
     }
@@ -596,13 +596,12 @@ class Rps
      * - ValorIR - ValorCSLL - OutrasRetençoes - ValorISSRetido
      * - DescontoIncondicionado - DescontoCondicionado)
      *
-     * @param type $value
-     * @throws InvalidArgumentException
+     * @param float $value
      */
     public function valorLiquidoNfse($value = 0.00)
     {
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
-            throw new \InvalidArgumentException('Os valores deve ser numericos tipo float.');
+            throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
         $this->infValorLiquidoNfse = round($value, 2);
     }
@@ -616,7 +615,7 @@ class Rps
     public function descontoIncondicionado($value = 0.00)
     {
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
-            throw new \InvalidArgumentException('Os valores deve ser numericos tipo float.');
+            throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
         $this->infDescontoIncondicionado = round($value, 2);
     }
@@ -630,7 +629,7 @@ class Rps
     public function descontoCondicionado($value = 0.00)
     {
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
-            throw new \InvalidArgumentException('Os valores deve ser numericos tipo float.');
+            throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
         $this->infDescontoCondicionado = round($value, 2);
     }
@@ -645,7 +644,7 @@ class Rps
     {
         $value = trim($value);
         if (!Validator::stringType()->length(1, 5)->validate($value)) {
-            throw new \InvalidArgumentException('O item da lista é obrigatório e'
+            throw new InvalidArgumentException('O item da lista é obrigatório e'
                 . ' deve ter no máximo 5 caracteres.');
         }
         $this->infItemListaServico = $value;
@@ -660,7 +659,7 @@ class Rps
     public function codigoCnae($value)
     {
         if (!Validator::numeric()->intVal()->validate($value)) {
-            throw new \InvalidArgumentException('O código CNAE é obrigatorio.');
+            throw new InvalidArgumentException('O código CNAE é obrigatorio.');
         }
         $this->infCodigoCnae = $value;
     }
@@ -675,7 +674,7 @@ class Rps
     {
         $value = trim($value);
         if (!Validator::stringType()->length(1, 20)->validate($value)) {
-            throw new \InvalidArgumentException('O codigo de tributação é obrigatório e deve ter '
+            throw new InvalidArgumentException('O codigo de tributação é obrigatório e deve ter '
                 . 'no máximo 20 caracteres.');
         }
         $this->infCodigoTributacaoMunicipio = $value;
@@ -691,7 +690,7 @@ class Rps
     {
         $value = trim($value);
         if (!Validator::stringType()->length(1, 2000)->validate($value)) {
-            throw new \InvalidArgumentException('A discriminação é obrigatória e deve ter '
+            throw new InvalidArgumentException('A discriminação é obrigatória e deve ter '
                 . 'no máximo 2000 caracteres.');
         }
         $this->infDiscriminacao = $value;
@@ -717,7 +716,7 @@ class Rps
     public function municipioPrestacaoServico($value)
     {
         if (!Validator::numeric()->intVal()->validate($value)) {
-            throw new \InvalidArgumentException('Deve ser passado o código do IBGE.');
+            throw new InvalidArgumentException('Deve ser passado o código do IBGE.');
         }
         $this->infMunicipioPrestacaoServico = $value;
     }

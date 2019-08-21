@@ -19,11 +19,7 @@ class Tools
             'homologacao' => 'http://www.issnetonline.com.br/webserviceabrasf/homologacao/servicos.asmx',
             'producao' => 'http://www.issnetonline.com.br/webserviceabrasf/novohamburgo/servicos.asmx',
             'version' => '1.00',
-            'msgns' => 'AQUI_msgns',
             'soapns' => 'http://www.issnetonline.com.br/webservice/nfd',
-            'xmlns' => 'http://www.issnetonline.com.br/webservice/nfd',
-//            'msgns' => 'http://www.abrasf.org.br/nfse.xsd',
-//            'soapns' => 'http://ws.bhiss.pbh.gov.br',
         ]
     ];
     protected $config;
@@ -93,12 +89,10 @@ class Tools
      */
     protected function createSoapRequest($message, $operation)
     {
-/*        $env = '<?xml version="1.0" encoding="utf-8"?>';*/
         $env = null;
         $env .= '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">';
         $env .= '<soap:Body>';
         $env .= '<' . $operation . ' xmlns="' . $this->wsobj->xmlns . '">';
-/*        $env .= '<xml><![CDATA[<?xml version="1.0" encoding="utf-8"?>' . $message . ']]></xml>';*/
         $env .= '<xml><![CDATA[' . $message . ']]></xml>';
         $env .= '</' . $operation . '>';
         $env .= '</soap:Body>';
@@ -108,10 +102,7 @@ class Tools
         $dom->formatOutput = false;
         $dom->loadXML($env);
 
-//        dd($dom->saveXML());
-//        dd(str_replace("\n", '', $dom->saveXML()));
         return $dom->saveXML($dom->documentElement);
-//        return str_replace("\n", '', $dom->saveXML());
     }
 
     /**
