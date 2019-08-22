@@ -5,7 +5,7 @@ namespace HaDDeR\NfseIssnet;
 
 
 use DOMElement;
-use Prophecy\Exception\Doubler\MethodNotFoundException;
+use Exception;
 use stdClass;
 
 class Response
@@ -14,6 +14,7 @@ class Response
      * @param $method
      * @param $documentElement
      * @return stdClass
+     * @throws Exception
      */
     public static function resolve($method, $documentElement)
     {
@@ -21,7 +22,7 @@ class Response
         if (method_exists(self::class, $method)) {
             return call_user_func([self::class, $method], $documentElement);
         } else {
-            throw new MethodNotFoundException('Método ' . $method . ' não encontrado. Classe: ' . self::class, static::class, $method);
+            throw new Exception('Método ' . $method . ' não encontrado. Classe: ' . self::class, static::class, $method);
         }
     }
 
