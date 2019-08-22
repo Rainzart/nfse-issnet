@@ -2,6 +2,7 @@
 
 namespace HaDDeR\NfseIssnet;
 
+use Carbon\Carbon;
 use DOMElement;
 use HaDDeR\NfseIssnet\Common\Tools;
 use HaDDeR\NfseIssnet\Models\Rps;
@@ -48,13 +49,12 @@ class Make
     public function make($rpss)
     {
         $body = $this->makeXML($rpss);
-        if ($this->config->dom->autoSign) {
-            $body = $this->sign($body, 'LoteRps');
-            $body = $this->clear($body);
-        }
-        $body = '<?xml version="1.0" encoding="utf-8"?>' . $body;
-        $this->validar($body, 'servico_enviar_lote_rps_envio');
 
+        if ($this->config->save_xml) {
+            $this->saveXML($body);
+        }
+
+        $this->validar($body, 'servico_enviar_lote_rps_envio');
         $retorno = $this->enviar($body, 'RecepcionarLoteRps');
         return $retorno;
     }
@@ -738,10 +738,22 @@ class Make
     {
         $config = is_object($config) ? $config : json_decode($config);
         $config->nfsePath = isset($config->nfsePath) ? $config->nfsePath : '/nfse';
+        $config->save_xml = isset($config->save_xml) ? $config->save_xml : false;
         $config->dom = (isset($config->dom) and is_object($config->dom) and is_a($config->dom, stdClass::class)) ? $config->dom : new stdClass();
 
         $config->dom->autoSign = isset($config->dom->autoSign) ? $config->dom->autoSign : true;
         $config->dom->formatOutput = isset($config->dom->formatOutput) ? $config->dom->formatOutput : false;
         return $config;
+    }
+
+    public function saveXML($body, $dir = 'xml', $filename = null)
+    {
+        $directory = $this->config->nfsePath . $dir . DIRECTORY_SEPARATOR;
+        $filename = $filename ? $filename : Carbon::now()->format('Y_m_d_H_i_s') . '_rps';
+        if (!is_dir($directory)) {
+            mkdir($directory);
+        }
+        $path = $directory . $filename . '.xml';
+        file_put_contents($path, $body);
     }
 }
