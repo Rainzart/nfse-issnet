@@ -33,7 +33,7 @@ class Make
         $this->config = $this->setConfig($config);
         $this->certificado = $certificado;
 
-        $this->pathSchemas = __DIR__ . '/../schemes';
+        $this->pathSchemas = __DIR__ . '/../Schemas';
 
         //TODO ver necessidade de não ser uma constante
         $this->algorithm = OPENSSL_ALGO_SHA1;
