@@ -418,7 +418,7 @@ class Rps
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
             throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
-        $this->infValorServicos = round($value, 2);
+        $this->infValorServicos = $this->decimalClean(round($value, 2));
     }
 
     /**
@@ -432,7 +432,7 @@ class Rps
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
             throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
-        $this->infOutrasRetencoes = round($value, 2);
+        $this->infOutrasRetencoes = $this->decimalClean(round($value, 2));
     }
 
     /**
@@ -446,7 +446,7 @@ class Rps
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
             throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
-        $this->infValorPis = round($value, 2);
+        $this->infValorPis = $this->decimalClean(round($value, 2));
     }
 
     /**
@@ -460,7 +460,7 @@ class Rps
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
             throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
-        $this->infValorCofins = round($value, 2);
+        $this->infValorCofins = $this->decimalClean(round($value, 2));
     }
 
     /**
@@ -474,7 +474,7 @@ class Rps
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
             throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
-        $this->infValorInss = round($value, 2);
+        $this->infValorInss = $this->decimalClean(round($value, 2));
     }
 
     /**
@@ -488,7 +488,7 @@ class Rps
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
             throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
-        $this->infValorIr = round($value, 2);
+        $this->infValorIr = $this->decimalClean(round($value, 2));
     }
 
     /**
@@ -502,7 +502,7 @@ class Rps
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
             throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
-        $this->infValorCsll = round($value, 2);
+        $this->infValorCsll = $this->decimalClean(round($value, 2));
     }
 
     /**
@@ -530,7 +530,7 @@ class Rps
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
             throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
-        $this->infValorIssRetido = round($value, 2);
+        $this->infValorIssRetido = $this->decimalClean(round($value, 2));
     }
 
     /**
@@ -544,7 +544,7 @@ class Rps
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
             throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
-        $this->infValorIss = round($value, 2);
+        $this->infValorIss = $this->decimalClean(round($value, 2));
     }
 
     /**
@@ -559,7 +559,7 @@ class Rps
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
             throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
-        $this->infBaseCalculo = round($value, 2);
+        $this->infBaseCalculo = $this->decimalClean(round($value, 2));
     }
 
     /**
@@ -573,7 +573,7 @@ class Rps
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
             throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
-        $this->infAliquota = round($value, 4);
+        $this->infAliquota = $this->decimalClean(round($value, 4));
     }
 
     /**
@@ -587,7 +587,7 @@ class Rps
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
             throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
-        $this->infValorDeducoes = round($value, 2);
+        $this->infValorDeducoes = $this->decimalClean(round($value, 2));
     }
 
     /**
@@ -603,7 +603,7 @@ class Rps
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
             throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
-        $this->infValorLiquidoNfse = round($value, 2);
+        $this->infValorLiquidoNfse = $this->decimalClean(round($value, 2));
     }
 
     /**
@@ -617,7 +617,7 @@ class Rps
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
             throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
-        $this->infDescontoIncondicionado = round($value, 2);
+        $this->infDescontoIncondicionado = $this->decimalClean(round($value, 2));
     }
 
     /**
@@ -631,7 +631,7 @@ class Rps
         if (!Validator::numeric()->floatVal()->min(0)->validate($value)) {
             throw new InvalidArgumentException('Os valores deve ser numericos tipo float.');
         }
-        $this->infDescontoCondicionado = round($value, 2);
+        $this->infDescontoCondicionado = $this->decimalClean(round($value, 2));
     }
 
     /**
@@ -719,5 +719,15 @@ class Rps
             throw new InvalidArgumentException('Deve ser passado o código do IBGE.');
         }
         $this->infMunicipioPrestacaoServico = $value;
+    }
+
+    private function decimalClean($value)
+    {
+        if (substr($value, -3, 1) == ',') {
+            $value = preg_replace('#[^0-9,]#', '', $value);
+        } else {
+            $value = preg_replace('#[^0-9,.]#', '', $value);
+        }
+        return empty($value) ? 0 : str_replace(',', '.', $value);
     }
 }
