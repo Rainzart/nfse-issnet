@@ -22,7 +22,7 @@ class Response
         if (method_exists(self::class, $method)) {
             return call_user_func([self::class, $method], $documentElement);
         } else {
-            throw new Exception('Método ' . $method . ' não encontrado. Classe: ' . self::class, static::class, $method);
+            throw new Exception('Método ' . $method . ' não encontrado. Classe: ' . self::class);
         }
     }
 
