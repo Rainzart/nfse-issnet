@@ -3,7 +3,6 @@
 namespace HaDDeR\NfseIssnet\Models;
 
 use Carbon\Carbon;
-use DateTime;
 use InvalidArgumentException;
 use Respect\Validation\Validator;
 
@@ -313,9 +312,9 @@ class Rps
     /**
      * Set date of issue
      *
-     * @param DateTime $value
+     * @param Carbon $value
      */
-    public function dataEmissao(DateTime $value)
+    public function dataEmissao(Carbon $value)
     {
         $this->infDataEmissao = $value;
     }
