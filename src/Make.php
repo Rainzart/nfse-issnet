@@ -52,7 +52,7 @@ class Make
         $body = $this->makeXML($rpss);
 
         if ($this->config->save_xml) {
-            $this->saveXML($body, $filename);
+            $this->saveXML($body, 'xml', $filename);
         }
 
         $this->validar($body, 'servico_enviar_lote_rps_envio');
