@@ -44,14 +44,15 @@ class Make
      * Gera o XML, assina e envia.
      *
      * @param $rpss
+     * @param null $filename
      * @return string
      */
-    public function make($rpss)
+    public function make($rpss, $filename = null)
     {
         $body = $this->makeXML($rpss);
 
         if ($this->config->save_xml) {
-            $this->saveXML($body);
+            $this->saveXML($body, $filename);
         }
 
         $this->validar($body, 'servico_enviar_lote_rps_envio');
