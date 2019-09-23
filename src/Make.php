@@ -514,7 +514,7 @@ class Make
             $endereco,
             'tc:Complemento',
             $rps->infTomadorEndereco['complemento'],
-            true,
+            false,
             'Complemento',
             false
         );
