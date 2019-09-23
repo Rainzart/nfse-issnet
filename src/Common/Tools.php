@@ -45,7 +45,7 @@ class Tools
         $this->certificate = $certificate;
 
         $this->environment = 'homologacao';
-        if ($this->config->tpamb === 1) {
+        if ($this->config->tpamb == 1) {
             $this->environment = 'producao';
         }
     }
