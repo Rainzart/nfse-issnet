@@ -21,6 +21,15 @@ class Tools
             'version' => '1.00',
             'soapns' => 'http://www.issnetonline.com.br/webservice/nfd',
             'xmlns' => 'http://www.issnetonline.com.br/webservice/nfd',
+        ],
+        '3543402' => [
+            'municipio' => 'Ribeirão Preto',
+            'uf' => 'SP',
+            'homologacao' => 'http://www.issnetonline.com.br/webserviceabrasf/homologacao/servicos.asmx',
+            'producao' => 'https://www.issnetonline.com.br/webserviceabrasf/ribeiraopreto/servicos.asmx',
+            'version' => '1.00',
+            'soapns' => 'http://www.issnetonline.com.br/webservice/nfd',
+            'xmlns' => 'http://www.issnetonline.com.br/webservice/nfd',
         ]
     ];
     protected $config;
